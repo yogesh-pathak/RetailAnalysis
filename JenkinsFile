@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                // Example build command
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                // Example test command
+            }
+        }
+        stage('Package') {
+            steps {
+                echo 'Packaging...'
+                // Example package command
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                // Example deploy command
+                // This could be anything from copying files to a server to deploying a Docker container
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            // Cleanup steps like deleting temporary files
+            cleanWs()
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
