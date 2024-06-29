@@ -8,7 +8,7 @@ pipeline {
     stage('Build') {
       steps {
         sh 'pip3 install --user pipenv --break-system-packages'
-        sh '/bitnami/jenkins/home/.local/bin/pipenv --rm --break-system-packages || exit0'
+        sh '/bitnami/jenkins/home/.local/bin/pipenv --rm || exit0'
         sh '/bitnami/jenkins/home/.local/bin/pipenv install'
       }
     }
