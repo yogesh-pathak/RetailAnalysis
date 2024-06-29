@@ -33,7 +33,6 @@ pipeline {
         always {
             echo 'Cleaning up...'
             // Cleanup steps like deleting temporary files
-            cleanWs()
         }
         success {
             echo 'Pipeline succeeded!'
