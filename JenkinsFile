@@ -9,12 +9,12 @@ pipeline {
       steps {
         sh 'pip3 install --user pipenv --break-system-packages'
         sh '/bitnami/jenkins/home/.local/bin/pipenv --rm --break-system-packages || exit0'
-        sh '/bitnami/jenkins/home/.local/bin/pipenv install --break-system-packages'
+        sh '/bitnami/jenkins/home/.local/bin/pipenv install'
       }
     }
     stage('Test') {
       steps {
-        sh '/bitnami/jenkins/home/.local/bin/pipenv run pytest --break-system-packages'
+        sh '/bitnami/jenkins/home/.local/bin/pipenv run pytest'
       }
     }
     stage('Package') {
