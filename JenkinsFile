@@ -1,45 +1,31 @@
 pipeline {
-    agent any
+  agent any
 
-    stages {
-        stage('Build') {
-            steps {
-                echo 'Building...'
-                // Example build command
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing...'
-                // Example test command
-            }
-        }
-        stage('Package') {
-            steps {
-                echo 'Packaging...'
-                // Example package command
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying...'
-                // Example deploy command
-                // This could be anything from copying files to a server to deploying a Docker container
-            }
-        }
+  environment {
+    LABS = credentials('labcreds')
+  }
+  stages {
+    stage('Build') {
+      steps {
+        sh 'pip3 install --userpipenv'
+        sh '/bitnami/jenkins/home/.local/bin/pipenv --rm || exit0'
+        sh '/bitnami/jenkins/home/.local/bin/pipenv install'
+      }
     }
-
-    post {
-        always {
-            echo 'Cleaning up...'
-            // Cleanup steps like deleting temporary files
-            cleanWs()
-        }
-        success {
-            echo 'Pipeline succeeded!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
+    stage('Test') {
+      steps {
+        sh '/bitnami/jenkins/home/.local/bin/pipenv run pytest'
+      }
     }
+    stage('Package') {
+      steps {
+        sh 'zip -r retailproject.zip.'
+      }
+    }
+    stage('Deploy') {
+      steps {
+        sh 'sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r . $LABS_USR@g02.itversity.com:/home/itv005857/retailproject'
+      }
+    }
+  }
 }
