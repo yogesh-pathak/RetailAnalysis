@@ -3,7 +3,6 @@ pipeline {
     environment {
         LABS = credentials('labcreds')
          // Adjust this path based on your Java installation
-        PATH = "${JAVA_HOME}/bin:${env.PATH}" // Update PATH to include javaHome/bin
     }
     stages {
         stage('Build') {
