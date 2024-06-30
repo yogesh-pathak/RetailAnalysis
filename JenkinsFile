@@ -1,51 +1,41 @@
 pipeline {
-  agent any
-
-  environment {
-    LABS = credentials('labcreds')
-  }
-  stages {
-    script {
-      // Define your Java installation path
-      def javaHome = '/opt/bitnami/java' // Adjust this path based on your Java installation
-
-      // Set JAVA_HOME and update PATH
-      sh """
+    agent any
+    environment {
+        LABS = credentials('labcreds')
+    }
+    stages {
+        stage('Build') {
+            steps {
+                // Define your Java installation path
+                def javaHome = '/opt/bitnami/java' // Adjust this path based on your Java installation
+                // Set JAVA_HOME and update PATH
+                sh """
       export JAVA_HOME =${javaHome}
       export PATH = \$JAVA_HOME/bin:\$PATH"""
-
-      // Verify JAVA_HOME and PATH
-      sh 'echo $JAVA_HOME'
-      sh 'echo $PATH'
+                // Verify JAVA_HOME and PATH
+                sh 'echo $JAVA_HOME'
+                sh 'echo $PATH'
+                sh 'pip3 install --user pipenv --break-system-packages'
+                sh '/bitnami/jenkins/home/.local/bin/pipenv --rm || exit 0'
+                sh '/bitnami/jenkins/home/.local/bin/pipenv install'
+                sh 'echo $PATH'
+                sh 'echo $JAVA_HOME'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh '/bitnami/jenkins/home/.local/bin/pipenv run pytest'
+            }
+        }
+        stage('Package') {
+            steps {
+                sh 'zip -r retailproject.zip.'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r . $LABS_USR@g02.itversity.com:/home/itv005857/retailproject'
+            }
+        }
     }
-    stage('Build') {
-      steps {
-        sh 'pip3 install --user pipenv --break-system-packages'
-        sh '/bitnami/jenkins/home/.local/bin/pipenv --rm || exit 0'
-        sh '/bitnami/jenkins/home/.local/bin/pipenv install'
-        sh 'echo $PATH'
-        sh 'echo $JAVA_HOME'
-        sh 'nano ~/.bashrc'
-        sh 'export JAVA_HOME=/opt/bitnami/java >> ~/.bashrc'
-        sh 'export PATH=$JAVA_HOME/bin:$PATH >> ~/.bashrc'
-        sh 'echo $PATH'
-        sh 'echo $JAVA_HOME'
-      }
-    }
-    stage('Test') {
-      steps {
-        sh '/bitnami/jenkins/home/.local/bin/pipenv run pytest'
-      }
-    }
-    stage('Package') {
-      steps {
-        sh 'zip -r retailproject.zip.'
-      }
-    }
-    stage('Deploy') {
-      steps {
-        sh 'sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r . $LABS_USR@g02.itversity.com:/home/itv005857/retailproject'
-      }
-    }
-  }
 }
