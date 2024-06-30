@@ -10,6 +10,8 @@ pipeline {
         sh 'pip3 install --user pipenv --break-system-packages'
         sh '/bitnami/jenkins/home/.local/bin/pipenv --rm || exit 0'
         sh '/bitnami/jenkins/home/.local/bin/pipenv install'
+        sh 'echo $PATH'
+        sh 'echo $JAVA_HOME'
       }
     }
     stage('Test') {
