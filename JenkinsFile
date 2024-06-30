@@ -12,6 +12,10 @@ pipeline {
         sh '/bitnami/jenkins/home/.local/bin/pipenv install'
         sh 'echo $PATH'
         sh 'echo $JAVA_HOME'
+        sh 'export JAVA_HOME=/opt/bitnami/java  '
+        sh 'export PATH=$JAVA_HOME/bin:$PATH'
+        sh 'echo $PATH'
+        sh 'echo $JAVA_HOME'
       }
     }
     stage('Test') {
