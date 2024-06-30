@@ -9,7 +9,7 @@ pipeline {
             steps {
                 // Verify JAVA_HOME and PATH
                 sh """
-                export JAVA_HOME = '/opt/bitnami/java'
+                export JAVA_HOME='/opt/bitnami/java'
                 export PATH=\$JAVA_HOME/bin:\$PATH
                 """
                 sh 'echo $JAVA_HOME'
