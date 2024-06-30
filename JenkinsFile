@@ -6,12 +6,10 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // Define your Java installation path
-                def javaHome = '/opt/bitnami/java' // Adjust this path based on your Java installation
-                // Set JAVA_HOME and update PATH
                 sh """
-      export JAVA_HOME =${javaHome}
-      export PATH = \$JAVA_HOME/bin:\$PATH"""
+                      export JAVA_HOME ='/opt/bitnami/java'
+                      export PATH = \$JAVA_HOME/bin:\$PATH
+                  """
                 // Verify JAVA_HOME and PATH
                 sh 'echo $JAVA_HOME'
                 sh 'echo $PATH'
