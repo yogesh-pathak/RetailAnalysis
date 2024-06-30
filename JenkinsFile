@@ -2,15 +2,17 @@ pipeline {
     agent any
     environment {
         LABS = credentials('labcreds')
+         // Adjust this path based on your Java installation
+        PATH = "${JAVA_HOME}/bin:${env.PATH}" // Update PATH to include javaHome/bin
     }
     stages {
         stage('Build') {
             steps {
-                sh """
-                      export JAVA_HOME ='/opt/bitnami/java'
-                      export PATH = \$JAVA_HOME/bin:\$PATH
-                  """
                 // Verify JAVA_HOME and PATH
+                sh """
+                export JAVA_HOME = '/opt/bitnami/java'
+                export PATH = '${JAVA_HOME}/bin:${env.PATH}'
+                """
                 sh 'echo $JAVA_HOME'
                 sh 'echo $PATH'
                 sh 'pip3 install --user pipenv --break-system-packages'
