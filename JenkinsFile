@@ -5,6 +5,19 @@ pipeline {
     LABS = credentials('labcreds')
   }
   stages {
+    script {
+      // Define your Java installation path
+      def javaHome = '/opt/bitnami/java' // Adjust this path based on your Java installation
+
+      // Set JAVA_HOME and update PATH
+      sh """
+      export JAVA_HOME =${javaHome}
+      export PATH = \$JAVA_HOME/bin:\$PATH"""
+
+      // Verify JAVA_HOME and PATH
+      sh 'echo $JAVA_HOME'
+      sh 'echo $PATH'
+    }
     stage('Build') {
       steps {
         sh 'pip3 install --user pipenv --break-system-packages'
@@ -12,8 +25,9 @@ pipeline {
         sh '/bitnami/jenkins/home/.local/bin/pipenv install'
         sh 'echo $PATH'
         sh 'echo $JAVA_HOME'
-        sh 'export JAVA_HOME=/opt/bitnami/java  '
-        sh 'export PATH=$JAVA_HOME/bin:$PATH'
+        sh 'nano ~/.bashrc'
+        sh 'export JAVA_HOME=/opt/bitnami/java >> ~/.bashrc'
+        sh 'export PATH=$JAVA_HOME/bin:$PATH >> ~/.bashrc'
         sh 'echo $PATH'
         sh 'echo $JAVA_HOME'
       }
